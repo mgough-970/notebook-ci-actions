@@ -14,7 +14,7 @@ env:
  
 jobs:
   deploy-book:
-    ## Only run if the PR is closed and merged
+    ## Only run if the PR is  closed and merged
     if: github.event.pull_request.merged == true
     #if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true ))
     runs-on: ubuntu-latest
