@@ -37,7 +37,7 @@ jobs:
       - name: Set up Python 3.8.12
         uses: actions/setup-python@v5 ## needed for caching
         with:
-          python-version: 3.8.12
+          python-version: 3.8.11
           cache: 'pip'
       - name: Add conda to system path
         run: |
