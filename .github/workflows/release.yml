@@ -1,0 +1,73 @@
+name: Release GitHub Actions
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Update versions and create tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          #!/bin/bash
+          set -e
+
+          # Loop through each action directory under .github/actions
+          for action_dir in ./*; do
+            if [ -d "$action_dir" ]; then
+              action_name=$(basename "$action_dir")
+              echo "Processing action: $action_name"
+              
+              # Check if there were changes in this directory in the last commit.
+              # (For more robust detection, compare against the latest tag for this action.)
+              if git diff --quiet HEAD^ HEAD -- "$action_dir"; then
+                echo "No changes detected in $action_name, skipping."
+              else
+                # Determine the current version; default to 0.0.0 if VERSION file doesn't exist.
+                if [ -f "$action_dir/VERSION" ]; then
+                  current_version=$(cat "$action_dir/VERSION")
+                else
+                  current_version="0.0.0"
+                fi
+
+                # Parse and bump the patch version.
+                IFS='.' read -r major minor patch <<< "$current_version"
+                new_patch=$((patch + 1))
+                new_version="${major}.${minor}.${new_patch}"
+                echo "Bumping version for $action_name: $current_version → $new_version"
+
+                # Update the VERSION file.
+                echo "$new_version" > "$action_dir/VERSION"
+                
+                # Commit the version bump.
+                git add "$action_dir/VERSION"
+                git commit -m "chore($action_name): bump version to $new_version [skip ci]"
+
+                # Create an annotated tag in the format: actionname-vX.Y.Z
+                tag="${action_name}-v${new_version}"
+                git tag -a "$tag" -m "Release $tag"
+
+                # Push the new tag to the repository.
+                git push origin "$tag"
+              fi
+            fi
+          done
+
+      - name: Push version bump commits
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin main
