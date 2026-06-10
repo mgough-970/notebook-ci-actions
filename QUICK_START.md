@@ -1,6 +1,6 @@
 # 🚀 Quick Start: Local Testing
 
-Get up and running with local GitHub Actions testing in under 5 minutes!
+Get up and running with local GitHub Actions testing in under 5 minutes! 
 
 ## ⚡ TL;DR - Essential Commands
 
