@@ -1,5 +1,5 @@
 # notebook-ci-actions
-=======
+======= 
 # Unified Notebook CI/CD Actions
 
 A comprehensive, streamlined GitHub Actions workflow system for notebook-based repositories. Provides automated validation, testing, execution, documentation generation, and deprecation management through a single, configurable workflow.
