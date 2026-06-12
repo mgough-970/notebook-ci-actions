@@ -167,7 +167,7 @@ jobs:
         git tag -a "${{ steps.version.outputs.new_tag }}" "$target_commitish" \
           -m "Release ${{ steps.version.outputs.new_tag }}"
     
-        git push origin "${{ steps.version.outputs.new_tag }}
+        git push origin "${{ steps.version.outputs.new_tag }}"
 
     - name: Write release notes
       run: |
